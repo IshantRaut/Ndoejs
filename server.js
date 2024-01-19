@@ -1,31 +1,10 @@
-const product=(n1,n2)=>{
-    return n1*n2;
-}
-
-console.log(product(10,20));
-
-const Student={
-    name:'Amit',
-    age:22,
-    College:'KITS college'
-}
-console.log(Student);
-
-let array=['apple', 'oranges' , ' ', 'mango', ' ' , 'lemon'];
-let newarray=array.map(item=>item===' '?'empty string':item);
-
-const copyarray=[...array];
-console.log(copyarray);
-
-console.log(newarray);
+const http=require('http');
 
 
-const obj1 = {'key1': 1 , 'key2' : 2}
+const server=http.createServer((req,res)=>{
 
-const obj2 = { ...obj1, key1: 1000}
+    console.log('Amit');
 
+})
 
-
-console.log(obj1)
-
-console.log(obj2)
+server.listen(4000);
