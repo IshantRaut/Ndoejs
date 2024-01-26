@@ -1,61 +1,22 @@
-const http=require('http');
-const fs=require('fs');
+const app=express();
 
+const adminRoutes=require('./routes/admin');
+const shopRoutes=require('./routes/shop');
 
-let userMessage=[];
-const server=http.createServer((req,res)=>{
-   console.log(req.url,req.method,req.headers);
+app.use(bodyParser.urlencoded({extended: false}));
 
-
-   const method=req.method;
-   const url=req.url;
-   if(url==='/home'){
-   if(url==='/'){
-    res.write('<html>');
-    res.write('<head><title>Enter Message</title></head>');
-    res.write('<body>');
-        res.write('<h1>' + userMessage + '</h1>');
-    res.write('<form action="/message" method="POST"><input type="text" name="message"><button type="submit">Send Message</button></form>');
-    res.write('</body>');
-    res.write('</html>');
-    return res.end();
-   }
-   else if(url==='/home'){
-    res.write('<html>');
-    res.write('<head><title> My first PAge</title></head>');
-    res.write('<body><h1>Welcome Home</h1></body>');
-@@ -26,6 +38,27 @@ const server=http.createServer((req,res)=>{
-    res.write('<body><h1>Welcome to my NodeJs Project</h1></body>');
-    res.write('</html>')
-    return res.end();
-   }
-
-   if(url==='/message' && method==='POST'){
-    const body=[];
-    req.on('data',(chunk)=>{
-        console.log(chunk);
-        body.push(chunk);
-    });
-    return req.on('end',()=>{
-        const parsedBody=Buffer.concat(body).toString();
-        const message=parsedBody.split('=')[1];
-        userMessage.unshift(message);
-        fs.writeFile('message.txt',userMessage.join('\n'),err=>{
-            res.statusCode=302;
-            res.setHeader('Location','/');
-            return res.end();
-        });
-
-    });
-
-
-   }
-    res.setHeader('Content-Type','text/html');
-    res.write('<html>');
-    res.write('<head><title> My first PAge</title></head>');
-    res.write('<body><h1>Hello</h1></body>');
-    res.write('</html>')
-    res.end();
-    
+app.post('/add-product',(req,res,next)=>{
+    // console.log("In the middleware");
+    res.send('<form action="/product" method="POST">Name:<input type="text" name="title"> Size: <input type="number" name="size"><button type="submit">Add Product</button></form>')  
 });
-server.listen(4000);
+app.use('/product',(req,res,next)=>{
+    console.log(req.body);
+    res.redirect('/');
+});
+app.use('/admin',adminRoutes);
+app.use('/shop',shopRoutes);
+
+app.use((req,res,next)=>{
+    res.status(404).send('<h1>Page Not Found!</h1>');
+});
+app.listen(4000);
